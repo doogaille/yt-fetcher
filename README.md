@@ -292,4 +292,3 @@ Check that `sources/index.json` exists and files are present in `sources/videos/
 ## License / usage
 
 Make sure your use of downloaded content complies with local laws and platform terms.
-# yt-fetcher
