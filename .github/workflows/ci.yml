@@ -34,8 +34,8 @@ jobs:
         run: python -m py_compile download_tracks.py transcode_sources.py
 
       - name: Smoke test no-transcode pipeline
+        shell: python
         run: |
-          python - << 'PY'
           import json
           from pathlib import Path
           import subprocess
@@ -49,35 +49,34 @@ jobs:
           source_file.write_bytes(b'fake')
 
           index_payload = {
-              'version': 1,
-              'generated_at': '2026-03-01T00:00:00+00:00',
-              'records': [
-                  {
-                      'track_key': 'artiste test::titre test',
-                      'artist': 'Artiste Test',
-                      'title': 'Titre Test',
-                      'source_file': 'videos/Artiste Test - Titre Test.mp4',
-                  }
-              ],
+            'version': 1,
+            'generated_at': '2026-03-01T00:00:00+00:00',
+            'records': [
+              {
+                'track_key': 'artiste test::titre test',
+                'artist': 'Artiste Test',
+                'title': 'Titre Test',
+                'source_file': 'videos/Artiste Test - Titre Test.mp4',
+              }
+            ],
           }
           (sources / 'index.json').write_text(json.dumps(index_payload), encoding='utf-8')
 
           command = [
-              sys.executable,
-              'transcode_sources.py',
-              '--sources-dir', 'tmp_sources',
-              '--output-dir', 'tmp_output',
-              '--generate', 'video',
-              '--no-transcode',
-              '--skip-existing',
+            sys.executable,
+            'transcode_sources.py',
+            '--sources-dir', 'tmp_sources',
+            '--output-dir', 'tmp_output',
+            '--generate', 'video',
+            '--no-transcode',
+            '--skip-existing',
           ]
           subprocess.run(command, check=True)
 
           expected = [
-              Path('tmp_output/videos/Artiste Test - Titre Test.mp4'),
+            Path('tmp_output/videos/Artiste Test - Titre Test.mp4'),
           ]
           missing = [str(path) for path in expected if not path.exists()]
           if missing:
-              raise SystemExit(f'Missing expected outputs: {missing}')
+            raise SystemExit(f'Missing expected outputs: {missing}')
           print('Smoke outputs validated.')
-          PY
